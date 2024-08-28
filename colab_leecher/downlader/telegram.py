@@ -13,12 +13,13 @@ from colab_leecher.utility.helper import speedETA, getTime, sizeUnit, status_bar
 async def media_Identifier(link):
     parts = link.split("/")
     message_id, message = parts[-1], None
-    msg_chat_id = "-100" + parts[4]
-    message_id, msg_chat_id = int(message_id), int(msg_chat_id)
+    chat_username = parts[-2]  # Extract the channel's username
+    message_id = int(message_id)
     try:
-        message = await colab_bot.get_messages(msg_chat_id, message_id)
+        message = await colab_bot.get_messages(chat_username, message_id)
     except Exception as e:
-        logging.error(f"Error getting messages {e}")
+        logging.error(f"Error getting messages: {e}")
+        return
 
     media = (
         message.document  # type: ignore
@@ -48,7 +49,7 @@ async def download_progress(current, total):
         eta=getTime(eta),
         done=sizeUnit(sum(Transfer.down_bytes) + current),
         left=sizeUnit(Transfer.total_down_size),
-        engine="Pyrogram 💥",
+        engine="PyroTgFork 💥",
     )
 
 
